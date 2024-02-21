@@ -1,0 +1,24 @@
+{
+  "name": "camkb/framework",
+  "description": "Learn PHP Framework",
+  "keywords": ["framework", "php"],
+  "type": "project",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Camkb",
+      "email": "camkb85@gmail.com"
+    }
+  ],
+  "require": {
+  },
+    "autoload": {
+      "psr-4": {
+        "App\\": "app/"
+      },
+      "files": [
+        "functions.php"
+      ]
+    }
+}

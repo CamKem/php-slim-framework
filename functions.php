@@ -1,15 +1,15 @@
 <?php
 
-use Core\App;
-use Core\Response;
-use const public\BASE_PATH;
+use app\Core\App;
+use app\Core\Response;
 
-function dd($value): void
+function dd(...$values): void
 {
-    echo "<pre>";
-    var_dump($value);
-    echo "</pre>";
-
+    foreach ($values as $value) {
+        echo "<pre>";
+        var_dump($value);
+        echo "</pre>";
+    }
     die();
 }
 
@@ -43,7 +43,7 @@ function base_path($path): string
 
 function config($key): mixed
 {
-    return App::getContainer()->resolve('config')[$key];
+    return App::container()->resolve('config')[$key];
 }
 
 function redirect($path): void
@@ -52,11 +52,11 @@ function redirect($path): void
     exit();
 }
 
-// TODO: implement a way to allow the extraction of any namespace (nested directories) from the controller
-//     and the method from the URI
 function view($path, $attributes = []): string
 {
-    extract($attributes);
+    // extract the array into variables
+    extract($attributes, EXTR_SKIP);
 
+    // replace dots with slashes and append .view.php & require the file
     return require base_path('views/' . str_replace('.', '/', $path) . '.view.php');
 }
