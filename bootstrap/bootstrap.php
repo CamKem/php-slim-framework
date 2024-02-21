@@ -13,12 +13,18 @@ $container = new Container();
 App::setContainer($container);
 
 // Register service providers
-(new ConfigServiceProvider($container))->register();
-(new DatabaseServiceProvider($container))->register();
-(new RouterServiceProvider($container))->register();
+//(new ConfigServiceProvider($container))->register();
+//(new DatabaseServiceProvider($container))->register();
+//(new RouterServiceProvider($container))->register();
+
+// use a glob pattern to register all service providers
+foreach (glob(base_path('app/Services/*.php')) as $provider) {
+    $provider = 'app\\Services\\' . basename($provider, '.php');
+    (new $provider($container))->register();
+}
 
 // bind each route to the container
-require base_path('routes.php');
+require base_path('routes/web.php');
 
 // Get the router from the container
 $router = $container->resolve(Router::class);

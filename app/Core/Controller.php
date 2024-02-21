@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace app\Core;
 
 class Controller
 {
@@ -10,7 +10,7 @@ class Controller
 
     public function __construct()
     {
-        // we will use this to define some common methods that we will use in our controllers
+        // we will use this to define some common methods that we will use in our Controllers
     }
 
     public function extractNamespace($controller)
