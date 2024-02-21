@@ -1,12 +1,14 @@
 <?php
 
-namespace public;
-
-use Core\Router;
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 const BASE_PATH = __DIR__.'/../';
 
-require BASE_PATH.'Core/functions.php';
+// functions are autoloaded in composer.json
+require BASE_PATH . 'vendor/autoload.php';
+//require BASE_PATH . 'functions.php';
 
 spl_autoload_register(function ($class) {
     $class = str_replace('\\', DIRECTORY_SEPARATOR, $class);
@@ -15,13 +17,5 @@ spl_autoload_register(function ($class) {
 });
 
 require base_path('bootstrap.php');
-
-$router = new Router();
-require base_path('routes.php');
-
-$uri = parse_url($_SERVER['REQUEST_URI'])['path'];
-$method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
-
-$router->route($uri, $method);
 
 
