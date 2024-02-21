@@ -1,8 +1,8 @@
 <?php
 
-namespace Controllers;
+namespace app\Controllers;
 
-use Core\Controller;
+use app\Core\Controller;
 
 class About extends Controller
 {
