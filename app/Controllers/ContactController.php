@@ -1,10 +1,10 @@
 <?php
 
-namespace Controllers;
+namespace app\Controllers;
 
-use Core\Controller;
+use app\Core\Controller;
 
-class Contact extends Controller
+class ContactController extends Controller
 {
 
     public function __invoke(): string
