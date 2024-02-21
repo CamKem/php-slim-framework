@@ -1,11 +1,11 @@
 <?php
 
-namespace Controllers\Notes;
+namespace app\Controllers\Notes;
 
-use Core\App;
-use Core\Controller;
-use Core\Database;
-use Core\Validator;
+use app\Core\App;
+use app\Core\Controller;
+use app\Core\Database;
+use app\Core\Validator;
 
 class NotesController extends Controller
 {
@@ -14,14 +14,13 @@ class NotesController extends Controller
 
     public function __construct()
     {
+        parent::__construct();
         $this->db = App::resolve(Database::class);
     }
 
     public function index(): string
     {
-
-        $notes = $this->db->query('select * from notes where user_id = 1')->get();
-
+        $notes = $this->db->query('select * from Notes where user_id = 1')->get();
         return view("notes.index", [
             'heading' => 'My Notes',
             'notes' => $notes
