@@ -6,6 +6,7 @@ use app\Core\App;
 use app\Core\Controller;
 use app\Core\Database;
 use app\Core\Validator;
+use Exception;
 
 class NotesController extends Controller
 {
@@ -15,7 +16,7 @@ class NotesController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->db = App::resolve(Database::class);
+        $this->db = app(Database::class);
     }
 
     public function index(): string
@@ -76,9 +77,9 @@ class NotesController extends Controller
 
     }
 
-    public function destroy(): null
+    public function destroy()
     {
-        $db = App::resolve(Database::class);
+        $db = app(Database::class);
 
         $currentUserId = 1;
 
