@@ -6,6 +6,7 @@ use app\Core\Router;
 use app\Services\ConfigServiceProvider;
 use app\Services\DatabaseServiceProvider;
 use app\Services\RouterServiceProvider;
+use app\Services\EnvService;
 
 $container = new Container();
 
@@ -16,6 +17,7 @@ App::setContainer($container);
 //(new ConfigServiceProvider($container))->register();
 //(new DatabaseServiceProvider($container))->register();
 //(new RouterServiceProvider($container))->register();
+$app->registerProvider(new EnvService($app));
 
 // use a glob pattern to register all service providers
 foreach (glob(base_path('app/Services/*.php')) as $provider) {
