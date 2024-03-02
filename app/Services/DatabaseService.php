@@ -5,19 +5,27 @@ namespace app\Services;
 use app\Core\Database;
 use app\Core\ServiceProvider;
 use app\Database\Migrator;
+use Override;
 
 class DatabaseService extends ServiceProvider
 {
 
-    public function register()
+    #[Override]
+    public function register(): void
     {
-        $this->container->singleton(Database::class, fn() =>
-            new Database(config('database'))
-        );
+        $this->app->singleton('db',Database::class);
 
-        $this->container->singleton(Migrator::class, fn() =>
-            new Migrator()
-        );
+        $this->app->singleton('migrate',Migrator::class);
+    }
+
+    #[Override]
+    public function boot(): callable
+    {
+        return fn() => $this->app->resolve(Database::class)->connect();
+        // TODO: if the route name is 'migrate' then run the migration
+//        if (request()->route()->getName() === 'migrate') {
+//            return $this->app->resolve(Migrator::class)->run();
+//        }
     }
 
 }
