@@ -7,68 +7,72 @@ use RuntimeException;
 class Container
 {
     protected static self $instance;
-    protected array $singletonBindings = [];
-    protected array $singletonInstances = [];
     protected array $bindings = [];
 
-    public function bind($key, $resolver): void
+    public function bind($key, $resolver, $singleton = false): void
     {
-        $this->bindings[$key] = $resolver;
+        $this->bindings[$key] = compact('resolver', 'singleton');
     }
 
-    public function unbind($key): void
+    public function singleton(string $class): void
+    {
+        $this->bind($class, static fn() => new $class, true);
+    }
+
+    public function isSingleton(string $key): bool
+    {
+        return $this->bindings[$key]['singleton'] ?? false;
+    }
+
+    public function isBound(string $key): bool
+    {
+        return array_key_exists($key, $this->bindings);
+    }
+
+    /**
+     * Resolves a class from the container
+     *
+     * @param string $key (The key of the binding to resolve)
+     * @return object (The resolved instance of the binding)
+     * @throws RuntimeException (If no matching binding is found)
+     */
+    public function resolve(string $key): mixed
+    {
+        if (!isset($this->bindings[$key])) {
+
+            throw new RuntimeException("No matching binding found for {$key}");
+        }
+
+        $binding = $this->bindings[$key];
+
+        if ($binding['singleton'] && isset($binding['instance'])) {
+            return $binding['instance'];
+        }
+
+        $resolver = $binding['resolver'];
+
+        if (!is_callable($resolver)) {
+            if (!class_exists($resolver)) {
+                throw new RuntimeException("Resolver for {$key} is not a valid class.");
+            }
+            throw new RuntimeException("Resolver for {$key} is not a valid callable.");
+        }
+
+        $instance = $resolver();
+
+        if ($binding['singleton']) {
+            $this->bindings[$key]['instance'] = $instance;
+        }
+
+        return $instance;
+    }
+
+
+    public function unBind($key): void
     {
         if (array_key_exists($key, $this->bindings)) {
             unset($this->bindings[$key]);
         }
-    }
-
-    public function singleton($key, $resolver): void
-    {
-        $this->singletonBindings[$key] = $resolver;
-        $this->singletonInstances[$key] = null;
-    }
-
-    // TODO flattern the singletonInstances & singletonBindings.
-    //  to be stored in the bindings array. Like this:
-    //  $this->bindings[$key] = $resolver;
-    //  Similar to the way laravel does it, bindings are the just used to store implementations.
-    //  eg: abstracts => concrete implementations.
-
-    /**
-     * @param $key
-     * @return object
-     */
-    public function resolve($key): object
-    {
-        if (array_key_exists($key, $this->singletonBindings)) {
-            if ($this->singletonInstances[$key] !== null) {
-                // return the actual singleton instance, not the array, so it's return the resolved instance
-
-                return $this->singletonInstances[$key];
-            }
-
-            $resolver = $this->singletonBindings[$key];
-
-            // check the resolver is a valid callable class
-            if (!is_callable($resolver)) {
-                if (!class_exists($resolver)) {
-                    throw new RuntimeException("Resolver for {$key} is not a valid class.");
-                }
-                throw new RuntimeException("Resolver for {$key} is not a valid callable.");
-            }
-
-            $this->singletonInstances[$key] = $resolver();
-
-            return $this->singletonInstances[$key];
-        }
-
-        if (array_key_exists($key, $this->bindings)) {
-            $resolver = $this->bindings[$key];
-            return $resolver();
-        }
-
-        throw new RuntimeException("No matching binding found for {$key}");
     }
 
     public static function getContainer(): self

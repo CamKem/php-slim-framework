@@ -2,35 +2,114 @@
 
 namespace app\Core;
 
-class App
+class App extends Container
 {
-    protected static $container;
+    protected array $registeredProviders = [];
+    protected array $bootedProviders = [];
+    protected bool $booted = false;
 
-    public static function setContainer(Container $container): void
+    public function __construct()
     {
-        if (isset(static::$container)) {
-            throw new \RuntimeException("Can't overwrite container instance");
+        static::setContainer($this);
+    }
+
+    public function boot(): true
+    {
+        if ($this->isBooted()) {
+            return true;
         }
 
-        static::$container = $container;
+        array_walk($this->registeredProviders, fn($provider) => $this->bootProvider($provider)
+        );
+
+        return $this->booted = true;
     }
 
-    public static function container(): Container
+    // TODO: test this unBoot method to see if it works
+    public function unBoot(): void
     {
-        if (!isset(static::$container)) {
-            throw new \RuntimeException("No container instance set");
+        $this->booted = false;
+
+        // dissolve the resolved providers
+        foreach ($this->bootedProviders as $provider) {
+            $this->unBootProvider($provider);
+        }
+        // remove them from the container, by unbinding them
+        array_walk($this->registeredProviders, fn($provider) => $this->unBind($provider));
+    }
+
+    public function isBooted(): bool
+    {
+        return $this->booted;
+    }
+
+    public function debugInfo(): array
+    {
+        return [
+            'services' => [
+                'registered' => array_map(get_class(...), $this->registeredProviders),
+                'booted' => array_map(get_class(...), $this->bootedProviders),
+            ],
+            'isBooted' => $this->booted,
+        ];
+    }
+
+//    public function make($service): void
+//    {
+//        foreach ($this->registeredProviders as $provider) {
+//            if ($provider->provides($service) && !in_array($provider, $this->bootedProviders, true)) {
+//                $provider->boot();
+//                $this->bootedProviders[] = $provider;
+//            }
+//        }
+//    }
+
+    public function registerProvider(ServiceProvider $provider): ServiceProvider
+    {
+        if ($registered = $this->getProvider($provider)) {
+            return $registered;
         }
 
-        return static::$container;
+        $this->registeredProviders[] = $provider;
+        $provider->register();
+
+        if ($this->isBooted()) {
+            $this->bootProvider($provider);
+        }
+
+        return $provider;
     }
 
-    public static function bind(string $key, callable $resolver): void
+    protected function bootProvider(ServiceProvider $provider): callable
     {
-        static::container()->bind($key, $resolver);
+        if (method_exists($provider, 'boot')) {
+            $this->bootedProviders[] = $provider;
+            return $provider->boot();
+        }
     }
 
-    public static function resolve(string $key)
+    protected function unBootProvider(ServiceProvider $provider): void
     {
-        return static::container()->resolve($key);
+        // TODO: set up to remove the resolved providers from the container
+        // TODO: also remove them from the bootedProviders array
+        if (method_exists($provider, 'unBoot')) {
+            $provider->unBoot();
+            // remove the provider from the bootedProviders array
+            $this->bootedProviders = array_filter(
+                $this->bootedProviders,
+                static fn($bootedProvider) => $bootedProvider !== $provider
+            );
+        }
     }
+
+    public function getProvider(ServiceProvider $provider): ServiceProvider|null
+    {
+        // find the $provider instance in the $this->registeredProviders array
+        // then return the value of the first instance found without using the collect() helper
+        return array_filter(
+            $this->registeredProviders,
+            static fn($registeredProvider) => $registeredProvider === $provider
+        )[0] ?? null;
+    }
+
 }
