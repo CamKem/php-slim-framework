@@ -4,12 +4,17 @@ namespace app\Core;
 
 abstract class ServiceProvider
 {
-    protected Container $container;
+    protected App $app;
+//    protected array $bootCallbacks = [];
 
-    public function __construct(Container $container)
+    public function __construct(App $app)
     {
-        $this->container = $container;
+        /** @var App $app */
+        $this->app = $app;
     }
 
     abstract public function register();
+
+    abstract public function boot(): callable;
+
 }
