@@ -2,10 +2,10 @@
 
 // a php class that will be our base class to handle all the migration logic for our database
 
-namespace app\Database;
+namespace App\Database;
 
-use app\Core\App;
-use app\Core\Database;
+use App\Core\App;
+use App\Core\Database;
 
 class Migration
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace app\Controllers\Notes;
+namespace App\Controllers\Notes;
 
-use app\Core\App;
-use app\Core\Controller;
-use app\Core\Database;
-use app\Core\Validator;
+use App\Core\App;
+use App\Core\Controller;
+use App\Core\Database;
+use App\Core\Validator;
 use Exception;
 
 class NotesController extends Controller

@@ -1,11 +1,11 @@
 <?php
 
-namespace app\Core\Routing;
+namespace App\Core\Routing;
 
-use app\Core\Collecting\Collection;
-use app\Core\Exceptions\HttpMethodNotAllowedException;
-use app\Core\Exceptions\HttpNotFoundException;
-use app\Core\Http\Request;
+use App\Core\Collecting\Collection;
+use App\Core\Exceptions\HttpMethodNotAllowedException;
+use App\Core\Exceptions\HttpNotFoundException;
+use App\Core\Http\Request;
 
 class RouteCollection
 {

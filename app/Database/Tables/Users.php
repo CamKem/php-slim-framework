@@ -1,9 +1,9 @@
 <?php
 
-namespace app\Database\Tables;
+namespace App\Database\Tables;
 
-use app\Core\Database;
-use app\Database\Migration;
+use App\Core\Database;
+use App\Database\Migration;
 
 class Users extends Migration
 {

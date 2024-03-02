@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Core\Exceptions;
+namespace App\Core\Exceptions;
 
 class HttpMethodNotAllowedException extends \InvalidArgumentException implements ExceptionInterface
 {

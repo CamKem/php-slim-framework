@@ -1,10 +1,10 @@
 <?php
 
-namespace app\Services;
+namespace App\Services;
 
-use app\Core\Database;
-use app\Core\ServiceProvider;
-use app\Database\Migrator;
+use App\Core\Database;
+use App\Core\ServiceProvider;
+use App\Database\Migrator;
 use Override;
 
 class DatabaseService extends ServiceProvider

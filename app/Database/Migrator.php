@@ -1,9 +1,9 @@
 <?php
 
-namespace app\Database;
+namespace App\Database;
 
-use app\Core\App;
-use app\Core\Database;
+use App\Core\App;
+use App\Core\Database;
 
 class Migrator
 {

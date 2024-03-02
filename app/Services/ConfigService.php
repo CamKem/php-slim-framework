@@ -1,9 +1,9 @@
 <?php
 
-namespace app\Services;
+namespace App\Services;
 
-use app\Core\Config;
-use app\Core\ServiceProvider;
+use App\Core\Config;
+use App\Core\ServiceProvider;
 use Override;
 
 class ConfigService extends ServiceProvider

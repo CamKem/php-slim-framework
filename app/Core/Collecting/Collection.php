@@ -1,8 +1,8 @@
 <?php
 
-namespace app\Core\Collecting;
+namespace App\Core\Collecting;
 
-use app\Core\Arrayable;
+use App\Core\Arrayable;
 use JsonException;
 use JsonSerializable;
 use Traversable;

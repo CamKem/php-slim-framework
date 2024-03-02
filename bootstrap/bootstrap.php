@@ -1,13 +1,13 @@
 <?php
 
-use app\Core\App;
-use app\Core\Http\Request;
-use app\Core\Routing\Router;
-use app\Services\ConfigService;
-use app\Services\DatabaseService;
-use app\Services\EnvService;
-use app\Services\RequestService;
-use app\Services\RouterService;
+use App\Core\App;
+use App\Core\Http\Request;
+use App\Core\Routing\Router;
+use App\Services\ConfigService;
+use App\Services\DatabaseService;
+use App\Services\EnvService;
+use App\Services\RequestService;
+use App\Services\RouterService;
 
 // Create the application & container.
 $app = new App();

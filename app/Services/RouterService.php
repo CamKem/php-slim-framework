@@ -1,9 +1,9 @@
 <?php
 
-namespace app\Services;
+namespace App\Services;
 
-use app\Core\Routing\Router;
-use app\Core\ServiceProvider;
+use App\Core\Routing\Router;
+use App\Core\ServiceProvider;
 use Override;
 
 class RouterService extends ServiceProvider

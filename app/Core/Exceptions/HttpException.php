@@ -1,8 +1,8 @@
 <?php
 
-namespace app\Core\Exceptions;
+namespace App\Core\Exceptions;
 
-use app\Core\Exceptions\ExceptionInterface;
+use App\Core\Exceptions\ExceptionInterface;
 use SensitiveParameter;
 use Throwable;
 

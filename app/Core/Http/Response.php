@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Core\Http;
+namespace App\Core\Http;
 
 class Response {
     const NOT_FOUND = 404;

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Core\Routing;
+namespace App\Core\Routing;
 
 use Closure;
 

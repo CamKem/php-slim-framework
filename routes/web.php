@@ -1,10 +1,10 @@
 <?php
 
-use app\Controllers\About;
-use app\Controllers\ContactController;
-use app\Controllers\HomeController;
-use app\Controllers\Notes\NotesController;
-use app\Core\Routing\Route;
+use App\Controllers\About;
+use App\Controllers\ContactController;
+use App\Controllers\HomeController;
+use App\Controllers\Notes\NotesController;
+use App\Core\Routing\Route;
 
 Route::get('/')
     ->controller(HomeController::class)

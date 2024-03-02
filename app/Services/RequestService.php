@@ -1,9 +1,9 @@
 <?php
 
-namespace app\Services;
+namespace App\Services;
 
-use app\Core\Http\Request;
-use app\Core\ServiceProvider;
+use App\Core\Http\Request;
+use App\Core\ServiceProvider;
 
 class RequestService extends ServiceProvider
 {

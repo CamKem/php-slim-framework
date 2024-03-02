@@ -1,7 +1,7 @@
 <?php
 
 
-namespace app\Core;
+namespace App\Core;
 
 /**
  * @template TKey of array-key

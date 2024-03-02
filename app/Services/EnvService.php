@@ -1,9 +1,9 @@
 <?php
 
-namespace app\Services;
+namespace App\Services;
 
-use app\Core\Env;
-use app\Core\ServiceProvider;
+use App\Core\Env;
+use App\Core\ServiceProvider;
 use Override;
 
 class EnvService extends ServiceProvider

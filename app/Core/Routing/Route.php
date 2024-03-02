@@ -1,11 +1,11 @@
 <?php
 
-namespace app\Core\Routing;
+namespace App\Core\Routing;
 
-use app\Core\Controller;
+use App\Core\Controller;
 use Closure;
 use Exception;
-use app\Core\Exceptions\RouteException;
+use App\Core\Exceptions\RouteException;
 use RuntimeException;
 
 /**

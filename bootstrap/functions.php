@@ -1,12 +1,12 @@
 <?php
 
-use app\Core\App;
-use app\Core\Collecting\Collection;
-use app\Core\Config;
-use app\Core\Env;
-use app\Core\Http\Request;
-use app\Core\Http\Response;
-use app\Core\Routing\Router;
+use App\Core\App;
+use App\Core\Collecting\Collection;
+use App\Core\Config;
+use App\Core\Env;
+use App\Core\Http\Request;
+use App\Core\Http\Response;
+use App\Core\Routing\Router;
 use JetBrains\PhpStorm\NoReturn;
 
 function dd(...$values): void

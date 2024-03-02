@@ -1,10 +1,10 @@
 <?php
 
-namespace app\Core\Routing;
+namespace App\Core\Routing;
 
-use app\Core\Arrayable;
-use app\Core\Controller;
-use app\Core\Exceptions\RouteException;
+use App\Core\Arrayable;
+use App\Core\Controller;
+use App\Core\Exceptions\RouteException;
 use Closure;
 
 /**
