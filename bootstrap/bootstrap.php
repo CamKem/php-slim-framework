@@ -1,39 +1,46 @@
 <?php
 
 use app\Core\App;
-use app\Core\Container;
-use app\Core\Router;
-use app\Services\ConfigServiceProvider;
-use app\Services\DatabaseServiceProvider;
-use app\Services\RouterServiceProvider;
+use app\Core\Config;
+use app\Core\Http\Request;
+use app\Core\Routing\Router;
+use app\Services\ConfigService;
+use app\Services\DatabaseService;
 use app\Services\EnvService;
+use app\Services\RequestService;
+use app\Services\RouterService;
 
-$container = new Container();
-
-// Set the container in the src class
-App::setContainer($container);
+// Create the application & container.
+$app = new App();
 
 // Register service providers
-//(new ConfigServiceProvider($container))->register();
-//(new DatabaseServiceProvider($container))->register();
-//(new RouterServiceProvider($container))->register();
 $app->registerProvider(new EnvService($app));
+$app->registerProvider(new ConfigService($app));
+$app->registerProvider(new DatabaseService($app));
+$app->registerProvider(new RouterService($app));
+$app->registerProvider(new RequestService($app));
 
-// use a glob pattern to register all service providers
-foreach (glob(base_path('app/Services/*.php')) as $provider) {
-    $provider = 'app\\Services\\' . basename($provider, '.php');
-    (new $provider($container))->register();
+//// use a glob pattern to register all service providers
+//foreach (glob(base_path('app/Services/*.php')) as $provider) {
+//    $provider = 'app\\Services\\' . basename($provider, '.php');
+//    $app->registerProvider(new $provider($app));
+//}
+
+// Boot the Application
+$app->boot();
+
+dd($app->debugInfo());
+
+try {
+    // Get the request from the container, bound in the service
+    $request = $app->resolve(Request::class);
+    $uri = $request->uri();
+    $method = $request->method();
+
+    // Get the router from the container, bound in the service
+    $router = $app->resolve(Router::class);
+    // Route the request
+    $router->route($uri, $method);
+} catch (Exception $e) {
+    die($e->getMessage());
 }
-
-// bind each route to the container
-require base_path('routes/web.php');
-
-// Get the router from the container
-$router = $container->resolve(Router::class);
-
-// Handle the current request
-$uri = parse_url($_SERVER['REQUEST_URI'])['path'] ?? '/';
-$method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
-
-// Route the request
-$router->route($uri, $method);
