@@ -1,7 +1,6 @@
 <?php
 
 use app\Core\App;
-use app\Core\Config;
 use app\Core\Http\Request;
 use app\Core\Routing\Router;
 use app\Services\ConfigService;
