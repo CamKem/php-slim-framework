@@ -6,8 +6,6 @@ use app\Controllers\HomeController;
 use app\Controllers\Notes\NotesController;
 use app\Core\Routing\Route;
 
-$router = app('router');
-
 Route::get('/')
     ->controller(HomeController::class)
     ->name('home');
