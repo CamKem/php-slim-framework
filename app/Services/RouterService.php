@@ -2,7 +2,6 @@
 
 namespace app\Services;
 
-use app\Core\Routing\RouteCollection;
 use app\Core\Routing\Router;
 use app\Core\ServiceProvider;
 use Override;
@@ -13,8 +12,7 @@ class RouterService extends ServiceProvider
     #[Override]
     public function register(): void
     {
-        $this->app->bind(RouteCollection::class, static fn() => new RouteCollection());
-        $this->app->bind(Router::class, static fn() => new Router());
+        $this->app->singleton(Router::class);
     }
 
     #[Override]
