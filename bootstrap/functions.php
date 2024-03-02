@@ -1,7 +1,13 @@
 <?php
 
 use app\Core\App;
-use app\Core\Response;
+use app\Core\Collecting\Collection;
+use app\Core\Config;
+use app\Core\Env;
+use app\Core\Http\Request;
+use app\Core\Http\Response;
+use app\Core\Routing\Router;
+use JetBrains\PhpStorm\NoReturn;
 
 function dd(...$values): void
 {
@@ -18,6 +24,19 @@ function urlIs($value): bool
     return $_SERVER['REQUEST_URI'] === $value;
 }
 
+/**
+ * Generate a URL for the given route.
+ *
+ * @param string $name (The name of the route)
+ * @param array $params (optional)
+ * @return string
+ */
+function route(string $name, array $params = []): string
+{
+    return app(Router::class)->generate($name, $params);
+}
+
+#[NoReturn]
 function abort($code = 404): void
 {
     http_response_code($code);
@@ -25,6 +44,11 @@ function abort($code = 404): void
     require base_path("views/{$code}.php");
 
     die();
+}
+
+function collect(array $items = []): Collection
+{
+    return new Collection($items);
 }
 
 function authorize($condition, $status = Response::FORBIDDEN): true
@@ -43,13 +67,47 @@ function base_path($path): string
 
 function config($key): mixed
 {
-    return App::container()->resolve('config')[$key];
+    return app(Config::class)->get($key);
 }
 
-function redirect($path): void
+// a function that accepts a callable to define a configuration array, to be used by a service provider for setting up configuration values
+function configure(callable $config): callable
 {
-    header("Location: {$path}");
-    exit();
+    return app(Config::class)::storeConfigClosure($config);
+}
+
+function env($key, $default = null): string
+{
+    return app(Env::class)->get($key, $default);
+}
+
+// TODO: fix this so the return type can be Response
+// need to return the return type of the Response::status method
+function redirect($path): Response
+{
+    return app(Response::class)->redirect($path);
+}
+
+// todo make this work
+function request($key = null, $default = null): mixed
+{
+    if ($key === null) {
+        return app(Request::class);
+    }
+    return app(Request::class)->input($key, $default);
+}
+
+/**
+ * Resolve a class from the container, via the App class
+ * @param string|null $key
+ * @return App|object
+ */
+function app(string|null $key = null): object
+{
+    if ($key === null) {
+        return App::getContainer();
+    }
+    return App::getContainer()->resolve($key);
 }
 
 function view($path, $attributes = []): string
@@ -57,6 +115,9 @@ function view($path, $attributes = []): string
     // extract the array into variables
     extract($attributes, EXTR_SKIP);
 
-    // replace dots with slashes and append .view.php & require the file
-    return require base_path('views/' . str_replace('.', '/', $path) . '.view.php');
+    return require base_path(
+        'views/'
+        . str_replace('.', '/', $path)
+        . '.view.php'
+    );
 }
