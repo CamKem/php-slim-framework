@@ -17,8 +17,8 @@ $app = new App();
 $app->registerProvider(new EnvService($app));
 $app->registerProvider(new ConfigService($app));
 $app->registerProvider(new DatabaseService($app));
-$app->registerProvider(new RouterService($app));
 $app->registerProvider(new RequestService($app));
+$app->registerProvider(new RouterService($app));
 
 //// use a glob pattern to register all service providers
 //foreach (glob(base_path('app/Services/*.php')) as $provider) {
@@ -29,13 +29,13 @@ $app->registerProvider(new RequestService($app));
 // Boot the Application
 $app->boot();
 
-dd($app->debugInfo());
+//dd($app->debugInfo());
 
 try {
     // Get the request from the container, bound in the service
     $request = $app->resolve(Request::class);
-    $uri = $request->uri();
-    $method = $request->method();
+    $uri = $request->getUri();
+    $method = $request->getMethod();
 
     // Get the router from the container, bound in the service
     $router = $app->resolve(Router::class);
