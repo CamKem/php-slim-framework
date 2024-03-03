@@ -97,6 +97,10 @@ function request($key = null, $default = null): mixed
     return app(Request::class)->input($key, $default);
 }
 
+function logger($message, $level = 'info', $context = []): void
+{
+    error_log("[$level] $message: " . print_r($context, true));
+}
 /**
  * Resolve a class from the container, via the App class
  * @param string|null $key
