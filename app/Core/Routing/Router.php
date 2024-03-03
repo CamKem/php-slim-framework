@@ -18,7 +18,7 @@ class Router
         return $this->routes->add($route);
     }
 
-    // TODO: add middleware support & the ability to constrain the route parameters
+    // TODO: add the ability to constrain the route parameters
     public function route(Request $request): mixed
     {
         $route = $this->getRoutes()->match($request);
@@ -26,6 +26,8 @@ class Router
         if ($route === null) {
             return $this->abort();
         }
+
+        $this->applyMiddleware($request, $route);
 
         $controller = $route->getController();
         $action = $route->getAction();
@@ -37,6 +39,16 @@ class Router
 
         if (is_string($controller) && $action !== null) {
             return (new $controller)->$action();
+        }
+    }
+
+    protected function applyMiddleware(Request $request, Route $route): void
+    {
+        foreach ($route->getMiddleware() as $alias) {
+            if (app()->hasAlias($alias)) {
+                $middleware = app()->getAlias($alias);
+                (new $middleware())->handle($request);
+            }
         }
     }
 

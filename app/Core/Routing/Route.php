@@ -7,7 +7,7 @@ class Route
     protected string $uri;
     protected string $controller;
     protected string|null $action;
-    protected array $middleware;
+    protected array $middleware = [];
     protected string $method;
 
     protected string $name;
@@ -16,6 +16,11 @@ class Route
     {
         $this->method = $method;
         $this->uri = $uri;
+    }
+
+    public function getUri(): string
+    {
+        return $this->uri;
     }
 
     public function matches(string $method, string $uri): bool
@@ -30,7 +35,9 @@ class Route
 
     public function setMiddleware(array $middleware): void
     {
-        $this->middleware = $middleware;
+        foreach ($middleware as $m) {
+            $this->middleware[] = $m;
+        }
     }
 
     public function getAction(): string|null
@@ -41,11 +48,6 @@ class Route
     public function setAction(string $action): void
     {
         $this->action = $action;
-    }
-
-    public function getUri(): string
-    {
-        return $this->uri;
     }
 
     public function getController(): string|array
