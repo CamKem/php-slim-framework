@@ -2,87 +2,93 @@
 
 namespace App\Core\Routing;
 
-use App\Core\Arrayable;
-use App\Core\Controller;
 use App\Core\Exceptions\RouteException;
-use Closure;
 
 /**
  * Methods that can be chained onto a route definition.
  *
- * @method controller(string|Arrayable|Controller|Callable $controller)
- * @method middleware(string $middleware)
- * @method name(string $name)
+ * @method get(string $uri, Callable|array|null $action = null)
+ * @method post(string $uri, Callable|array|null $action = null)
+ * @method put(string $uri, Callable|array|null $action = null)
+ * @method patch(string $uri, Callable|array|null $action = null)
+ * @method delete(string $uri, Callable|array|null $action = null)
+ * @method options(string $uri, Callable|array|null $action = null)
+ * @method any(string $uri, Callable|array|null $action = null)
+ * @method match(array|string $methods, string $uri, Callable|array|null $action = null)
+ * @method group(array $attributes, Callable $callback)
  * @method where(array $where)
  */
 
 class RouteRegistrar
 {
 
-    protected static Router $router;
+    protected Router $router;
+    protected Route $route;
 
-    /**
-     * The attributes that can be applied to a route definition.
-     * Through this class, by chaining methods onto a definition,
-     * you can set these attributes.
-     *
-     * @var array
-     */
-    protected array $attributes = [
-        'name',
-        'controller',
-        'middleware',
-        'where',
-    ];
+    protected array $verbs = ['get', 'post', 'put', 'patch', 'delete', 'options', 'any'];
 
-    public function __construct(Router|null $router = null)
+    public function __construct(Router $router)
     {
-        self::$router = $router ?? new Router();
+        $this->router = $router;
     }
 
-    public function attribute(string $key, mixed $value): static
+    public function controller(string|array $controller): self
     {
-        if (!in_array($key, $this->attributes, true)) {
-            throw new RouteException("Attribute [{$key}] does not exist.");
-        }
+        $this->route->setController($controller);
+        return $this;
+    }
 
-        if ($key === 'middleware') {
-            foreach ($value as $index => $middleware) {
-                $value[$index] = (string) $middleware;
+    public function middleware(string $middleware): self
+    {
+        $this->route->setMiddleware([$middleware]);
+        return $this;
+    }
+
+//    public function where(array $where): self
+//    {
+//        $this->route->setWhere($where);
+//        return $this;
+//    }
+
+    public function name(string $name): self
+    {
+        $this->route->setName($name);
+        return $this;
+    }
+
+    public function __destruct()
+    {
+        $this->register();
+    }
+
+    public function register(): self
+    {
+        if (empty($this->route->getName())) {
+            throw new RouteException('All routes must use name()');
+        }
+        if (empty($this->route->getController())) {
+            throw new RouteException('All routes must use controller()');
+        }
+        $this->router->addRoute($this->route);
+        return $this;
+    }
+
+    /**
+     * Register a new temporary route object
+     * Ensuring that the method is a valid HTTP method and the uri is a valid uri
+     * @param $method
+     * @param $parameters
+     * @return RouteRegistrar
+     */
+    public function __call($method, $parameters): static
+    {
+        if (in_array($method, $this->verbs, true)) {
+            if ((count($parameters) < 1) && !preg_match('/^\//', $parameters[0])) {
+                throw new RouteException('Not a valid URI');
             }
+            $this->route = new Route($method, $parameters[0]);
         }
-
-        $this->attributes[$key] = $value;
         return $this;
-    }
-
-    /**
-     * Create a route group with shared attributes.
-     *
-     * @param Closure $callback
-     * @return $this
-     */
-    public function group(Closure $callback)
-    {
-        $this->router->group($this->attributes, $callback);
-
-        return $this;
-    }
-
-    /**
-     * Register a new route with the router.
-     *
-     * @return void
-     */
-    public function __call($method, $parameters)
-    {
-        $this->attributes[$method] = $parameters[0];
-        return $this;
-    }
-
-    public function getAttributes(): array
-    {
-        return $this->attributes;
     }
 
 }

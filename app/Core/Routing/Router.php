@@ -2,7 +2,7 @@
 
 namespace App\Core\Routing;
 
-use Closure;
+use App\Core\Http\Request;
 
 class Router
 {
@@ -13,43 +13,31 @@ class Router
         $this->routes = new RouteCollection();
     }
 
-    public function add(Route $route): Route
+    public function addRoute(Route $route): Route
     {
         return $this->routes->add($route);
     }
 
-    // TODO: make a more robust router that returns instances of a Route object
-    //  that way we can add properties to the route, like name, middleware, etc
-    //  must also implement a way to call the route from the Route object
-    public function route($uri, $method): mixed
+    // TODO: add middleware support & the ability to constrain the route parameters
+    public function route(Request $request): mixed
     {
-        foreach ($this->routes as $route) {
+        $route = $this->getRoutes()->match($request);
 
-            if ($route->getUri() === $uri && $route->getMethod() === strtoupper($method)) {
-
-                $controller = $route->getController();
-                $action = $route->getAction();
-
-                // If the controller is a closure, then we can just call it
-                // Todo: fix the Route object to allow for a closure to be passed as a controller
-                if ($controller instanceof Closure) {
-                    return $controller();
-                }
-
-                // if $action is null, then we can call the invoke method on the controller
-                if ($action === null) {
-                    return (new $controller())();
-                }
-
-                if (is_string($controller) && $action !== null) {
-                    return (new $controller)->$action();
-                }
-
-            }
-
+        if ($route === null) {
+            return $this->abort();
         }
 
-        $this->abort();
+        $controller = $route->getController();
+        $action = $route->getAction();
+
+        // if $action is null, then we can call the invoke method on the controller
+        if ($action === null) {
+            return (new $controller())();
+        }
+
+        if (is_string($controller) && $action !== null) {
+            return (new $controller)->$action();
+        }
     }
 
     public function getRoutes(): RouteCollection
@@ -58,7 +46,7 @@ class Router
     }
 
     /**
-     * Load the Routes into the RouterColllection in the Router
+     * Load the Routes into the RouteCollection in the Router
      */
     public function loadRoutes(): void
     {
@@ -67,7 +55,7 @@ class Router
 
     protected function abort($code = 404): void
     {
-        http_response_code($code);
+        //http_response_code($code);
 
         require base_path("views/{$code}.php");
 

@@ -36,29 +36,18 @@ class RouteCollection
      * Find the first route matching a given request.
      *
      * @param Request $request
-     * @return Route
-     * @var Route $route
-     * @throws HttpMethodNotAllowedException
-     * @throws HttpNotFoundException
+     * @return Route|null
      */
-    public function match(Request $request): Route
+    public function match(Request $request): Route|null
     {
-        // first we need to get the request method
-        $method = $request->getMethod();
-        // then we need to get the uri from the request
-        $uri = $request->getUri();
-        dd($this->routes);
-        // then we need to loop through the routes to find the matching route
-        $this->routes->each(function ($route) use ($method, $uri) {
-            // if the route matches the request method and path
-            dd($route);
-            if ($route->matches($method, $uri)) {
-                // then we return the route
+        foreach ($this->routes->toArray() as $route) {
+            if ($route->matches(
+                strtolower($request->getMethod()), $request->getUri()
+            )) {
                 return $route;
             }
-        });
-        return $this->routes->get($request->getPath())
-            ?? throw new HttpNotFoundException();
+        }
+        return null;
     }
 
     /**
@@ -91,34 +80,4 @@ class RouteCollection
         return $this->routes->toArray();
     }
 
-    public function getRouteByMethod(): Route {}
-
-    /**
-     * Get all the routes keyed by their HTTP verb.
-     * @return Collection
-     */
-    public function getRoutesByMethod(): Collection
-    {
-        // loop through the routes and change the Collection to use the method as the key
-        return $this->routes->each(function (Route $route) {
-            // sort the routes by their method
-            // then return the routes
-        });
-    }
-
-    public function getRouteByAction(): Route {}
-
-    /**
-     * Get all the route keyed by their controller action.
-     *
-     * @return Collection
-     */
-    public function getRoutesByAction(): Collection
-    {
-        // loop through the routes and change the Collection to use the action as the key
-        return $this->routes->each(function (Route $route) {
-            // sort the routes by their action
-            // then return the routes
-        });
-    }
 }

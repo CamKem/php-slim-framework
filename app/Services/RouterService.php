@@ -15,19 +15,17 @@ class RouterService extends ServiceProvider
         $this->app->singleton(Router::class);
     }
 
+    /**
+     * Load the Routes into the RouteCollection in the Router
+     * @uses Router::loadRoutes()
+     */
     #[Override]
-    public function boot(): callable
+    public function boot(): void
     {
-        return fn() => $this->app->resolve(Router::class)->loadRoutes();
-        // TODO: autocomplete doesn't work here, not sure why
-        //   because we are injecting the App container into the base ServiceProvider
-        //   whereas below the app() helper works fine.
-        //   autocomplete works here with the app() helper
-        //   app(Router::class)->loadRoutes();
+        // TODO: autocomplete doesn't work here, not sure if it's possible with IoC containers
         /** @var Router $router */
-//        $router = $this->app->resolve(Router::class);
-//        $router->loadRoutes();
-       //dd($this->app->resolve(Router::class)->getRoutes());
+        $router = $this->app->resolve(Router::class);
+        $router->loadRoutes();
     }
 
 }
