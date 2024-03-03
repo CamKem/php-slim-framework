@@ -3,12 +3,17 @@
 use App\Controllers\About;
 use App\Controllers\ContactController;
 use App\Controllers\HomeController;
+use App\Controllers\Info;
 use App\Controllers\Notes\NotesController;
-use App\Core\Routing\Route;
+use App\Core\Routing\RouteProxy as Route;
 
 Route::get('/')
     ->controller(HomeController::class)
     ->name('home');
+
+Route::get('/info')
+    ->controller(Info::class)
+    ->name('info');
 
 Route::get('/about')
     ->controller(About::class)
