@@ -4,22 +4,23 @@ namespace App\Core;
 
 use PDO;
 use PDOStatement;
+use SensitiveParameter;
 
 class Database
 {
     public PDO $connection;
     public PDOStatement $statement;
 
-    public function __construct($config, $username = 'root', $password = '')
+    public function connect(): void
     {
-        $dsn = 'mysql:' . http_build_query($config, '', ';');
+        $dsn = 'mysql:' . http_build_query(config('database'), '', ';');
 
-        $this->connection = new PDO($dsn, $username, $password, [
+        $this->connection = new PDO($dsn, config('database.username'), config('database.password'), [
            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
     }
 
-    public function query($query, $params = [])
+    public function query($query, $params = []): static
     {
         $this->statement = $this->connection->prepare($query);
 
@@ -28,17 +29,17 @@ class Database
         return $this;
     }
 
-    public function get()
+    public function get(): false|array
     {
         return $this->statement->fetchAll();
     }
 
-    public function find()
+    public function find(): false|array
     {
         return $this->statement->fetch();
     }
 
-    public function findOrFail()
+    public function findOrFail(): false|array
     {
         $result = $this->find();
 
