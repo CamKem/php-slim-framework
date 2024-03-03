@@ -4,13 +4,13 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 
-class Info extends Controller
+class AboutController extends Controller
 {
 
     public function __invoke(): string
     {
-        return view("info", [
-            'heading' => 'PHP Info',
+        return view("about", [
+            'heading' => 'About Us',
         ]);
     }
 
