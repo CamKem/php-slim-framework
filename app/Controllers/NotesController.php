@@ -4,7 +4,9 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Database;
+use App\Core\Http\Response;
 use App\Core\Validator;
+use App\Core\View;
 
 class NotesController extends Controller
 {
@@ -17,7 +19,7 @@ class NotesController extends Controller
         $this->db = app(Database::class);
     }
 
-    public function index(): string
+    public function index(): View
     {
         $notes = $this->db->query('select * from Notes where user_id = 1')->get();
         return view("notes.index", [
@@ -26,7 +28,7 @@ class NotesController extends Controller
         ]);
     }
 
-    public function create(): string
+    public function create(): View
     {
         return view("notes.create", [
             'heading' => 'Create Note',
@@ -34,7 +36,7 @@ class NotesController extends Controller
         ]);
     }
 
-    public function store(): null
+    public function store(): View|Response
     {
         $errors = [];
 
@@ -54,11 +56,11 @@ class NotesController extends Controller
             'user_id' => 1
         ]);
 
-        return redirect('/notes');
+        return redirect()->route('notes.show', ['id' => $this->db->lastInsertId()]);
 
     }
 
-    public function show(): string
+    public function show(): View
     {
         $currentUserId = 1;
 
@@ -75,23 +77,69 @@ class NotesController extends Controller
 
     }
 
-    public function destroy()
+    public function edit(): View
     {
-        $db = app(Database::class);
-
         $currentUserId = 1;
 
-        $note = $db->query('select * from notes where id = :id', [
-            'id' => $_POST['id']
+        $note = $this->db->query('select * from notes where id = :id', [
+            'id' => $_GET['id']
         ])->findOrFail();
 
         authorize($note['user_id'] === $currentUserId);
 
-        $db->query('delete from notes where id = :id', [
+        return view("notes.edit", [
+            'heading' => 'Edit Note',
+            'note' => $note,
+            'errors' => []
+        ]);
+    }
+
+    public function update(): View|Response
+    {
+        $errors = [];
+
+        if (! Validator::string($_POST['body'], 1, 1000)) {
+            $errors['body'] = 'A body of no more than 1,000 characters is required.';
+        }
+
+        if (! empty($errors)) {
+            return view("notes.edit", [
+                'heading' => 'Edit Note',
+                'note' => [
+                    'id' => $_POST['id'],
+                    'body' => $_POST['body']
+                ],
+                'errors' => $errors
+            ]);
+        }
+
+        $this->db->query('update notes set body = :body where id = :id', [
+            'body' => $_POST['body'],
             'id' => $_POST['id']
         ]);
 
-        return redirect('/notes');
+        return redirect()->route('notes.show', [
+            'id' => request()->get('id')
+        ]);
+    }
+
+    public function destroy(): Response
+    {
+
+        // TODO:: set up a flash message to confirm the delete
+
+        $currentUserId = 1;
+
+        $id = request()->get('id');
+
+        $note = $this->db->query('select * from notes where id = :id', compact('id'))
+            ->findOrFail();
+
+        authorize($note['user_id'] === $currentUserId);
+
+        $this->db->query('delete from notes where id = :id', compact('id'));
+
+        return redirect()->route('notes.index');
     }
 
 }
