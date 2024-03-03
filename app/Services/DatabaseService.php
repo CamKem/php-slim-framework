@@ -18,14 +18,17 @@ class DatabaseService extends ServiceProvider
         $this->app->singleton(Migrator::class);
     }
 
+    /**
+     * Connect to the database and keep the connection alive
+     * @return void
+     * @uses Database::connect()
+     */
     #[Override]
     public function boot(): void
     {
         $this->app->resolve(Database::class)->connect();
         // TODO: if the route name is 'migrate' then run the migration
-//        if (request()->route()->getName() === 'migrate') {
-//            return $this->app->resolve(Migrator::class)->run();
-//        }
+        // return $this->app->resolve(Migrator::class)->run();
     }
 
 }
