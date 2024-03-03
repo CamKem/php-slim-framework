@@ -21,6 +21,17 @@ class Router
     // TODO: add the ability to constrain the route parameters
     public function route(Request $request): mixed
     {
+        //dd($request);
+        // Check for a _method field in the POST data
+        if ($request->getMethod() === 'POST' && $request->has('_method')) {
+            // Validate the _method field
+            $method = strtoupper($request->get('_method'));
+            if (in_array($method, ['PUT', 'PATCH', 'DELETE'])) {
+                // Use the _method field as the HTTP method
+                $request->setMethod($method);
+            }
+        }
+
         $route = $this->getRoutes()->match($request);
 
         if ($route === null) {
@@ -84,7 +95,6 @@ class Router
     {
         http_response_code($code);
         require base_path("views/{$code}.php");
-
         die();
     }
 }
