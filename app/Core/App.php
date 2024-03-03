@@ -54,16 +54,6 @@ class App extends Container
         ];
     }
 
-//    public function make($service): void
-//    {
-//        foreach ($this->registeredProviders as $provider) {
-//            if ($provider->provides($service) && !in_array($provider, $this->bootedProviders, true)) {
-//                $provider->boot();
-//                $this->bootedProviders[] = $provider;
-//            }
-//        }
-//    }
-
     public function registerProvider(ServiceProvider $provider): ServiceProvider
     {
         if ($registered = $this->getProvider($provider)) {
@@ -80,11 +70,13 @@ class App extends Container
         return $provider;
     }
 
-    protected function bootProvider(ServiceProvider $provider): callable
+    protected function bootProvider(ServiceProvider $provider): void
     {
-        if (method_exists($provider, 'boot')) {
-            $this->bootedProviders[] = $provider;
-            return $provider->boot();
+        foreach ($this->registeredProviders as $registeredProvider) {
+            if (($registeredProvider === $provider) && !in_array($provider, $this->bootedProviders, true)) {
+                $provider->boot();
+                $this->bootedProviders[] = $provider;
+            }
         }
     }
 
