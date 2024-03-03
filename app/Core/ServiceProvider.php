@@ -13,8 +13,8 @@ abstract class ServiceProvider
         $this->app = $app;
     }
 
-    abstract public function register();
+    abstract public function register(): void;
 
-    abstract public function boot(): callable;
+    abstract public function boot(): void;
 
 }

@@ -13,11 +13,9 @@ class RequestService extends ServiceProvider
         $this->app->bind(Request::class, fn() => new Request());
     }
 
-    public function boot(): callable
+    public function boot(): void
     {
-        return function () {
-            $this->app->resolve(Request::class);
-        };
+        $this->app->resolve(Request::class);
        // $uri = parse_url($_SERVER['REQUEST_URI'])['path'] ?? '/';
         //$method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
     }

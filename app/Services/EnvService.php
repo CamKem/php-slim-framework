@@ -15,9 +15,9 @@ class EnvService extends ServiceProvider
     }
 
     #[Override]
-    public function boot(): callable
+    public function boot(): void
     {
-        return fn() => $this->app->resolve(Env::class);
+        $this->app->resolve(Env::class);
     }
 
 }

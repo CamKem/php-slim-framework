@@ -23,20 +23,17 @@ class ConfigService extends ServiceProvider
     /**
      * Boot the service provider.
      *
-     * @return callable
      * @uses Config::loadConfig
      * @uses Config::set
      */
     #[Override]
-    public function boot(): callable
+    public function boot(): void
     {
         $config = $this->app->resolve(Config::class);
         $values = $config->loadConfig();
-        return static function () use ($values, $config) {
-            foreach ($values as $key => $value) {
-                $config->set($key, $value);
-            }
-        };
+        foreach ($values as $key => $value) {
+            $config->set($key, $value);
+        }
     }
 
 }
