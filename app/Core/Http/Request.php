@@ -10,21 +10,28 @@ class Request
     protected string $method;
     protected string $uri;
     protected array $headers;
-    protected array $body;
-    protected array $parameters;
+    protected array $bodyParameters;
+    protected array $queryParameters;
+    protected string $sessionId;
 
     public function __construct()
     {
         $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->uri = $_SERVER['REQUEST_URI'];
+        $this->uri = $this->stripQueryString($_SERVER['REQUEST_URI']);
         $this->headers = getallheaders();
-        $this->body = $_POST;
-        $this->parameters = $_REQUEST;
+        $this->bodyParameters = $_POST;
+        $this->queryParameters = $_GET;
+        $this->sessionId = $_REQUEST['PHPSESSID'] ?? null;
     }
 
     public function getMethod(): string
     {
         return $this->method;
+    }
+
+    public function setMethod(string $method): void
+    {
+        $this->method = $method;
     }
 
     public function getPath(): string
@@ -42,40 +49,44 @@ class Request
         return $this->headers;
     }
 
-    public function getBody(): array
-    {
-        return $this->body;
-    }
-
     public function getParameters(): array
     {
-        return $this->parameters;
+        return array_merge($this->queryParameters, $this->bodyParameters);
     }
 
-    public function getParameter(string $key, $default = null)
+    public function has(string $key): bool
     {
-        return $this->parameters[$key] ?? $default;
+        return isset($this->getParameters()[$key]);
     }
 
-    public function input(string $key, $default = null)
+    public function get(string $key, $default = null)
     {
-        return $this->parameters[$key] ?? $default;
+        return $this->getParameters()[$key] ?? $default;
+    }
+
+    public function getSessionId(): string
+    {
+        return $this->sessionId;
+    }
+
+    public function stripQueryString(string $uri): string
+    {
+        if (str_contains($uri, '?')) {
+            return explode('?', $uri)[0];
+        }
+
+        return $uri;
     }
 
     public function route($parameter = null): Route
     {
-        $route = $this->resolveRoute();
+        $route = app(Router::class)->getRoutes()->match($this);
 
         if ($parameter !== null) {
             return $route->getParameter($parameter);
         }
 
         return $route;
-    }
-
-    public function resolveRoute(): Route
-    {
-        return app(Router::class)->getRoutes()->match($this);
     }
 
 }
