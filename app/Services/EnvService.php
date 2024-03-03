@@ -14,10 +14,14 @@ class EnvService extends ServiceProvider
         $this->app->singleton(Env::class);
     }
 
+    /**
+     * Load the environment variables
+     * @uses Env::load
+     */
     #[Override]
     public function boot(): void
     {
-        $this->app->resolve(Env::class);
+        $this->app->resolve(Env::class)->load();
     }
 
 }

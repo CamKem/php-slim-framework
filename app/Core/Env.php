@@ -8,15 +8,8 @@ class Env
 {
     protected array $env = [];
 
-    public function __construct()
+    public function load(): void
     {
-        $this->load();
-    }
-
-    protected function load(): void
-    {
-        echo 'Memory usage before loading config: ' . memory_get_usage() . "\n";
-
         if (empty($this->env)) {
             $envFilePath = base_path('.env');
 
@@ -36,15 +29,12 @@ class Env
             $this->env = $env;
         }
 
-        echo 'Memory usage after loading config: ' . memory_get_usage() . "\n";
-        echo 'Peak memory usage: ' . memory_get_peak_usage() . "\n";
+        // TODO: test memory usage
+        // echo 'Memory usage before loading config: ' . memory_get_usage() . "\n";
+        // echo 'Memory usage after loading config: ' . memory_get_usage() . "\n";
+        // echo 'Peak memory usage: ' . memory_get_peak_usage() . "\n";
     }
 
-
-//    public function getEnv(string $key, $default = null): string
-//    {
-//        return $this->env[$key] ?? $default;
-//    }
     public function get(string $key, $default = null): string
     {
         return $this->env[$key] ?? $default;
