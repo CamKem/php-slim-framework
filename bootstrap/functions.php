@@ -7,6 +7,7 @@ use App\Core\Env;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
+use App\Core\Session;
 use JetBrains\PhpStorm\NoReturn;
 
 function dd(...$values): void
@@ -81,11 +82,19 @@ function env($key, $default = null): string
     return app(Env::class)->get($key, $default);
 }
 
-// TODO: fix this so the return type can be Response
-// need to return the return type of the Response::status method
+function response(): Response
+{
+    return app(Response::class);
+}
+
 function redirect($path): Response
 {
     return app(Response::class)->redirect($path);
+}
+
+function session(): Session
+{
+    return app(Session::class);
 }
 
 // todo make this work
@@ -101,10 +110,20 @@ function logger($message, $level = 'info', $context = []): void
 {
     error_log("[$level] $message: " . print_r($context, true));
 }
+
+//// TODO: add login helpers
+//function auth(): mixed
+//{
+//    if (session()->has('user')) {
+//        return session()->get('user');
+//    }
+//    return Auth::user();
+//}
+
 /**
  * Resolve a class from the container, via the App class
  * @param string|null $key
- * @return App|object
+ * @return object
  */
 function app(string|null $key = null): object
 {
