@@ -3,11 +3,12 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\View;
 
 class AboutController extends Controller
 {
 
-    public function __invoke(): string
+    public function __invoke(): View
     {
         return view("about", [
             'heading' => 'About Us',
