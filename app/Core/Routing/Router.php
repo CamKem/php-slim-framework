@@ -57,6 +57,16 @@ class Router
         return $this->routes;
     }
 
+    // generate a URL for the given named route
+    public function generate(string $name, array $params = []): string
+    {
+        $route = $this->routes->getRoute($name);
+        if ($route) {
+            return $route->generate($params);
+        }
+        return $this->abort();
+    }
+
     /**
      * Load the Routes into the RouteCollection in the Router
      */
@@ -65,10 +75,14 @@ class Router
         require base_path('routes/web.php');
     }
 
-    protected function abort($code = 404): void
+    /**
+     * Abort the request & Return the error page
+     * @param int $code
+     * @return null
+     */
+    protected function abort(int $code = 404)
     {
-        //http_response_code($code);
-
+        http_response_code($code);
         require base_path("views/{$code}.php");
 
         die();

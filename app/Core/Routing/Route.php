@@ -85,4 +85,16 @@ class Route
         $this->name = $name;
     }
 
+    public function generate(array $params = []): string
+    {
+        $uri = $this->getUri();
+
+        if (!empty($params)) {
+            $queryString = http_build_query($params);
+            $uri = "{$uri}?{$queryString}";
+        }
+
+        return $uri;
+    }
+
 }
