@@ -8,6 +8,7 @@ use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
 use App\Core\Session;
+use App\Core\View;
 use JetBrains\PhpStorm\NoReturn;
 
 function dd(...$values): void
@@ -87,8 +88,11 @@ function response(): Response
     return app(Response::class);
 }
 
-function redirect($path): Response
+function redirect($path = null): Response
 {
+    if ($path === null) {
+        return app(Response::class);
+    }
     return app(Response::class)->redirect($path);
 }
 
@@ -97,15 +101,15 @@ function session(): Session
     return app(Session::class);
 }
 
-// todo make this work
 function request($key = null, $default = null): mixed
 {
     if ($key === null) {
         return app(Request::class);
     }
-    return app(Request::class)->input($key, $default);
+    return app(Request::class)->get($key, $default);
 }
 
+// add phpdocs to ignore the debug function
 function logger($message, $level = 'info', $context = []): void
 {
     error_log("[$level] $message: " . print_r($context, true));
@@ -133,14 +137,7 @@ function app(string|null $key = null): object
     return App::getContainer()->resolve($key);
 }
 
-function view($path, $attributes = []): string
+function view($path, $attributes = []): View
 {
-    // extract the array into variables
-    extract($attributes, EXTR_SKIP);
-
-    return require base_path(
-        'views/'
-        . str_replace('.', '/', $path)
-        . '.view.php'
-    );
+    return View::render($path, $attributes);
 }
