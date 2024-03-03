@@ -6,6 +6,8 @@ class App extends Container
 {
     protected array $registeredProviders = [];
     protected array $bootedProviders = [];
+
+    protected array $aliases = [];
     protected bool $booted = false;
 
     public function __construct()
@@ -102,6 +104,21 @@ class App extends Container
             $this->registeredProviders,
             static fn($registeredProvider) => $registeredProvider === $provider
         )[0] ?? null;
+    }
+
+    public function alias(string $alias, string $class): void
+    {
+        $this->aliases[$alias] = $class;
+    }
+
+    public function hasAlias(string $alias): bool
+    {
+        return array_key_exists($alias, $this->aliases);
+    }
+
+    public function getAlias(string $alias): string
+    {
+        return $this->aliases[$alias];
     }
 
 }
