@@ -2,6 +2,8 @@
 
 namespace App\Core\Http;
 
+use App\Core\Routing\Router;
+
 class Response {
     const NOT_FOUND = 404;
     const FORBIDDEN = 403;
@@ -26,9 +28,22 @@ class Response {
         exit;
     }
 
-    public static function redirect(string $url): void
+    /**
+     * Redirect to a given URL
+     *
+     * @param string $url
+     * @return Response
+     */
+    public static function redirect(string $url): static
     {
         header('Location: ' . $url);
-        exit;
+        return new static;
     }
+
+    // method for redirecting to a named route
+    public static function route(string $name, array $params = []): static
+    {
+        return self::redirect(app(Router::class)->generate($name, $params));
+    }
+
 }
