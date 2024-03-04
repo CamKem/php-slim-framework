@@ -3,8 +3,6 @@
 namespace App\Core\Routing;
 
 use App\Core\App;
-use App\Core\Arrayable;
-use App\Core\Controller;
 
 /**
  * RouteProxy
@@ -23,8 +21,6 @@ use App\Core\Controller;
  * @method static delete(string $uri, Callable|array|null $action = null)
  * @method static options(string $uri, Callable|array|null $action = null)
  * @method static any(string $uri, Callable|array|null $action = null)
- * @method static match(array|string $methods, string $uri, Callable|array|null $action = null)
- * @method static group(array $attributes, Callable $callback)
  */
 class RouteProxy
 {
