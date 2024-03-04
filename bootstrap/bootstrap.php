@@ -34,6 +34,12 @@ $app->alias('auth', AuthMiddleware::class);
 // Boot the Application
 $app->boot();
 
+// set the exception handler
+set_exception_handler(static function (Throwable $e) use ($app) {
+    return $app->resolve(Response::class)
+        ->view('error.exception', ['message' => $e->getMessage()]);
+});
+
 // Route the request
 try {
     // Get the request from the container, bound in the service
