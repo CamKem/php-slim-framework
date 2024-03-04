@@ -23,7 +23,7 @@ function dd(...$values): void
 
 function urlIs($value): bool
 {
-    return $_SERVER['REQUEST_URI'] === $value;
+    return request()->getUri() === $value;
 }
 
 /**
@@ -91,9 +91,9 @@ function response(): Response
 function redirect($path = null): Response
 {
     if ($path === null) {
-        return app(Response::class);
+        return response();
     }
-    return app(Response::class)->redirect($path);
+    return response()->redirect($path);
 }
 
 function session(): Session
@@ -139,5 +139,5 @@ function app(string|null $key = null): object
 
 function view($path, $attributes = []): View
 {
-    return View::render($path, $attributes);
+    return View::make($path, $attributes);
 }
