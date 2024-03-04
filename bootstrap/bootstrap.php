@@ -47,7 +47,7 @@ try {
     // Get the router from the container, bound in the service
     $router = $app->resolve(Router::class);
     // Route the request
-    $router->route($request);
+    $router->dispatch($request);
 } catch (RouteException $e) {
     die($e->getMessage());
 }
