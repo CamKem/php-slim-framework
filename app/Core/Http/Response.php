@@ -28,12 +28,6 @@ class Response {
         exit;
     }
 
-    /**
-     * Redirect to a given URL
-     *
-     * @param string $url
-     * @return Response
-     */
     public static function redirect(string $url): static
     {
         header('Location: ' . $url);
