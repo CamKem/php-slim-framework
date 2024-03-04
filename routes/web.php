@@ -8,7 +8,6 @@ use App\Controllers\InfoController;
 use App\Controllers\NotesController;
 use App\Core\Routing\RouteProxy as Route;
 
-include base_path('routes/error.php');
 include base_path('routes/auth.php');
 
 Route::get('/')
