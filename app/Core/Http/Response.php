@@ -3,6 +3,7 @@
 namespace App\Core\Http;
 
 use App\Core\Routing\Router;
+use App\Core\View;
 
 class Response {
     const NOT_FOUND = 404;
@@ -26,6 +27,17 @@ class Response {
     {
         echo $body;
         exit;
+    }
+
+
+    public static function send(): void
+    {
+        exit;
+    }
+
+    public function view(string $view, array $data = []): View
+    {
+        return view($view, $data);
     }
 
     public static function redirect(string $url): static
