@@ -3,6 +3,7 @@
 namespace App\Core\Routing;
 
 use App\Core\Exceptions\RouteException;
+use Closure;
 
 /**
  * Methods that can be chained onto a route definition.
@@ -32,8 +33,11 @@ class RouteRegistrar
         $this->router = $router;
     }
 
-    public function controller(string|array $controller): self
+    public function controller(string|array|Closure $controller): self
     {
+        if (is_string($controller) && !class_exists($controller)) {
+            throw new RouteException('Controller does not exist');
+        }
         $this->route->setController($controller);
         return $this;
     }

@@ -2,10 +2,12 @@
 
 namespace App\Core\Routing;
 
+use Closure;
+
 class Route
 {
     protected string $uri;
-    protected string $controller;
+    protected string|Closure $controller;
     protected string|null $action;
     protected array $middleware = [];
     protected string $method;
@@ -50,15 +52,20 @@ class Route
         $this->action = $action;
     }
 
-    public function getController(): string|array
+    public function getController(): string|Closure
     {
         return $this->controller;
     }
 
-    public function setController(string|array $controller): void
+    public function setController(string|array|Closure $controller): void
     {
         // if it's a string, we assume that it's a class name
         if (is_string($controller)) {
+            $this->controller = $controller;
+        }
+
+        // if it's a closure, we assume that it's an anonymous function
+        if ($controller instanceof Closure) {
             $this->controller = $controller;
         }
 

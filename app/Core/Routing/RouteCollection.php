@@ -3,8 +3,6 @@
 namespace App\Core\Routing;
 
 use App\Core\Collecting\Collection;
-use App\Core\Exceptions\HttpMethodNotAllowedException;
-use App\Core\Exceptions\HttpNotFoundException;
 use App\Core\Http\Request;
 
 class RouteCollection

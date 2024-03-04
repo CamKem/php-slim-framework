@@ -2,7 +2,9 @@
 
 namespace App\Core\Routing;
 
+use App\Core\Exceptions\RouteException;
 use App\Core\Http\Request;
+use Closure;
 
 class Router
 {
@@ -19,18 +21,10 @@ class Router
     }
 
     // TODO: add the ability to constrain the route parameters
-    public function route(Request $request): mixed
+    // TODO: accept the request method as a parameter in the closure & controllers
+    public function dispatch(Request $request): mixed
     {
-        //dd($request);
-        // Check for a _method field in the POST data
-        if ($request->getMethod() === 'POST' && $request->has('_method')) {
-            // Validate the _method field
-            $method = strtoupper($request->get('_method'));
-            if (in_array($method, ['PUT', 'PATCH', 'DELETE'])) {
-                // Use the _method field as the HTTP method
-                $request->setMethod($method);
-            }
-        }
+        $this->checkSpoofedForm($request);
 
         $route = $this->getRoutes()->match($request);
 
@@ -45,11 +39,16 @@ class Router
 
         // if $action is null, then we can call the invoke method on the controller
         if ($action === null) {
-            return (new $controller())();
+            return (new $controller())($request);
+        }
+
+        // if $controller is instance of Closure, then we can call it directly
+        if ($controller instanceof Closure) {
+            return $controller($request);
         }
 
         if (is_string($controller) && $action !== null) {
-            return (new $controller)->$action();
+            return (new $controller)->$action($request);
         }
     }
 
@@ -72,10 +71,10 @@ class Router
     public function generate(string $name, array $params = []): string
     {
         $route = $this->routes->getRoute($name);
-        if ($route) {
-            return $route->generate($params);
+        if ($route === null) {
+            throw new RouteException("Route {$name} not found.");
         }
-        return $this->abort();
+        return $route->generate($params);
     }
 
     /**
@@ -94,7 +93,24 @@ class Router
     protected function abort(int $code = 404)
     {
         http_response_code($code);
-        require base_path("views/{$code}.php");
+        require base_path("views/error/{$code}.view.php");
         die();
+    }
+
+    /**
+     * Override the request method if form spoofing is detected
+     * @param Request $request
+     * @return void
+     */
+    public function checkSpoofedForm(Request $request): void
+    {
+        if ($request->getMethod() === 'POST' && $request->has('_method')) {
+            // Validate the _method field
+            $method = strtoupper($request->get('_method'));
+            if (in_array($method, ['PUT', 'PATCH', 'DELETE'])) {
+                // Use the _method field as the HTTP method
+                $request->setMethod($method);
+            }
+        }
     }
 }
