@@ -23,9 +23,9 @@ $app->registerProvider(new ConfigService($app));
 $app->registerProvider(new DatabaseService($app));
 $app->registerProvider(new RouterService($app));
 
-// Bind the session to the container
+// Bind the session, request, and response services to the container
 $app->bind(Session::class, static fn() => new Session());
-$app->bind(Request::class, static fn() => new Request());
+$app->singleton(Request::class);
 $app->bind(Response::class, static fn() => new Response());
 
 // Middleware aliases for the application
