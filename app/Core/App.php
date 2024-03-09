@@ -21,7 +21,8 @@ class App extends Container
             return true;
         }
 
-        array_walk($this->registeredProviders, fn($provider) => $this->bootProvider($provider)
+        array_walk($this->registeredProviders, fn($provider) =>
+            $this->bootProvider($provider)
         );
 
         return $this->booted = true;
