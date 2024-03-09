@@ -19,16 +19,6 @@ class Container
         $this->bind($class, static fn() => new $class, true);
     }
 
-    public function isSingleton(string $key): bool
-    {
-        return $this->bindings[$key]['singleton'] ?? false;
-    }
-
-    public function isBound(string $key): bool
-    {
-        return array_key_exists($key, $this->bindings);
-    }
-
     /**
      * Resolves a class from the container
      *
@@ -87,6 +77,16 @@ class Container
     public static function setContainer(self $container): self
     {
         return self::$instance = $container;
+    }
+
+    public function isSingleton(string $key): bool
+    {
+        return $this->bindings[$key]['singleton'] ?? false;
+    }
+
+    public function isBound(string $key): bool
+    {
+        return array_key_exists($key, $this->bindings);
     }
 
 
