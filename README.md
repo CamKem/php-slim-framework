@@ -6,6 +6,8 @@ Contributions welcome, I will continue to work on it as I have some space time.
 
 ### TODO
 - Authorisation core
+- User roles
+- Authentisation core
 - more advanced global exception handler
 - template engine
 - ORM (migration & query builder)
