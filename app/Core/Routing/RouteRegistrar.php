@@ -87,6 +87,7 @@ class RouteRegistrar
     public function __call($method, $parameters): static
     {
         if (in_array($method, $this->verbs, true)) {
+            // if the parameters are an array, then the first element is the URI
             if ((count($parameters) < 1) && !preg_match('/^\//', $parameters[0])) {
                 throw new RouteException('Not a valid URI');
             }

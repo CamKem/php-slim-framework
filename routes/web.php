@@ -35,26 +35,31 @@ Route::post('/contact')
     ->name('contact.store');
 
 Route::get('/notes')
-    ->middleware('auth')
+    //->middleware('auth')
     ->controller([NotesController::class, 'index'])
     ->name('notes.index');
 
-Route::get('/note')
-    ->middleware('auth')
-    ->controller([NotesController::class, 'show'])
-    ->name('notes.show');
-
-Route::delete('/note')
-    ->middleware('auth')
-    ->controller([NotesController::class, 'destroy'])
-    ->name('notes.destroy');
-
 Route::get('/notes/create')
-    ->middleware('auth')
+    //->middleware('auth')
     ->controller([NotesController::class, 'create'])
     ->name('notes.create');
 
+Route::get('/notes/{note}')
+    //->middleware('auth')
+    ->controller([NotesController::class, 'show'])
+    ->name('notes.show');
+
+Route::delete('/notes/{note}')
+    //->middleware('auth')
+    ->controller([NotesController::class, 'destroy'])
+    ->name('notes.destroy');
+
 Route::post('/notes')
-    ->middleware('auth')
+    //->middleware('auth')
     ->controller([NotesController::class, 'store'])
     ->name('notes.store');
+
+Route::get('/notes/{note}/edit')
+    //->middleware('auth')
+    ->controller([NotesController::class, 'edit'])
+    ->name('notes.edit');

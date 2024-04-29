@@ -29,10 +29,6 @@ class Env
             $this->env = $env;
         }
 
-        // TODO: test memory usage
-        // echo 'Memory usage before loading config: ' . memory_get_usage() . "\n";
-        // echo 'Memory usage after loading config: ' . memory_get_usage() . "\n";
-        // echo 'Peak memory usage: ' . memory_get_peak_usage() . "\n";
     }
 
     public function get(string $key, $default = null): string
@@ -41,3 +37,8 @@ class Env
     }
 
 }
+
+// TODO: test memory usage
+// echo 'Memory usage before loading config: ' . memory_get_usage() . "\n";
+// echo 'Memory usage after loading config: ' . memory_get_usage() . "\n";
+// echo 'Peak memory usage: ' . memory_get_peak_usage() . "\n";

@@ -1,16 +1,21 @@
 {
   "name": "camkb/framework",
-  "description": "Learn PHP Framework",
+  "description": "The Slim Framework, Batteries NOT included",
   "keywords": ["framework", "php"],
-  "type": "project",
+  "type": "framework",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
     {
       "name": "Camkb",
-      "email": "camkb85@gmail.com"
+      "email": "cam@iterated.tech"
     }
   ],
+    "scripts": {
+        "dump": [
+            "composer dump-autoload"
+        ]
+    },
   "require": {
   },
     "autoload": {
