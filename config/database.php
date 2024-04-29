@@ -8,5 +8,8 @@ configure(fn() => [
         'password' => env('DB_PASSWORD', ''),
         'dbname' => env('DB_NAME', strtolower(str_replace(' ', '_', env('APP_NAME', 'camwork')))),
         'charset' => env('DB_CHARSET', 'utf8mb4'),
+        'options' => [
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ],
     ],
 ]);

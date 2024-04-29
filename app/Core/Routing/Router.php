@@ -24,15 +24,22 @@ class Router
     // TODO: accept the request method as a parameter in the closure & controllers
     public function dispatch(Request $request): mixed
     {
+        // Check for form spoofing
         $this->checkSpoofedForm($request);
 
+        // Match the request to a route
         $route = $this->getRoutes()->match($request);
 
         if ($route === null) {
             return $this->abort();
         }
 
+        // Apply the middleware to the route
         $this->applyMiddleware($request, $route);
+
+        // Now the request has been matched to a route.
+        // We should store the route parameters in the request object
+        $request->setRouteParameters();
 
         $controller = $route->getController();
         $action = $route->getAction();
@@ -65,6 +72,11 @@ class Router
     public function getRoutes(): RouteCollection
     {
         return $this->routes;
+    }
+
+    public function getRoute(string $name): Route|null
+    {
+        return $this->routes->getRoute($name);
     }
 
     // generate a URL for the given named route

@@ -9,10 +9,11 @@ class Request
 {
     protected string $method;
     protected string $uri;
+    protected array $routeParameters = [];
     protected array $headers;
     protected array $bodyParameters;
     protected array $queryParameters;
-    protected string $sessionId;
+    protected string|null $sessionId;
 
     public function __construct()
     {
@@ -51,7 +52,7 @@ class Request
 
     public function getParameters(): array
     {
-        return array_merge($this->queryParameters, $this->bodyParameters);
+        return array_merge($this->queryParameters, $this->bodyParameters, $this->routeParameters);
     }
 
     public function has(string $key): bool
@@ -87,6 +88,11 @@ class Request
         }
 
         return $route;
+    }
+
+    public function setRouteParameters(): array
+    {
+        return $this->routeParameters = $this->route()->getRequestParams($this->uri);
     }
 
 }

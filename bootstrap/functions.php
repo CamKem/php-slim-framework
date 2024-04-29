@@ -9,7 +9,6 @@ use App\Core\Http\Response;
 use App\Core\Routing\Router;
 use App\Core\Session;
 use App\Core\View;
-use JetBrains\PhpStorm\NoReturn;
 
 function dd(...$values): void
 {
@@ -30,20 +29,30 @@ function urlIs($value): bool
  * Generate a URL for the given route.
  *
  * @param string $name (The name of the route)
- * @param array $params (optional)
+ * @param string|array|null $params (optional)
  * @return string
  */
-function route(string $name, array $params = []): string
+function route(string $name, string|array|null $params = []): string
 {
-    return app(Router::class)->generate($name, $params);
+    if (! is_array($params)) {
+        $params = [$params];
+    }
+
+    // If there's only one parameter & it's not an associative array
+    // use the first key from the route parameters
+    if (count($params) === 1 && array_keys($params)[0] === 0) {
+        $routeParameters = app(Router::class)->getRoute($name)->getParameters();
+        $params = [key($routeParameters) => $params[0]];
+    }
+
+    return app(Router::class)->generate($name, $params ?? []);
 }
 
-#[NoReturn]
 function abort($code = 404): void
 {
     http_response_code($code);
 
-    require base_path("views/{$code}.php");
+    require base_path("views/error/{$code}.view.php");
 
     die();
 }

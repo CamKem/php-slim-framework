@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Database;
+use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Validator;
 use App\Core\View;
@@ -56,16 +57,16 @@ class NotesController extends Controller
             'user_id' => 1
         ]);
 
-        return redirect()->route('notes.show', ['id' => $this->db->lastInsertId()]);
+        return redirect()->route('notes.show', ['note' => $this->db->lastInsertId()]);
 
     }
 
-    public function show(): View
+    public function show(Request $request): View
     {
         $currentUserId = 1;
 
         $note = $this->db->query('select * from notes where id = :id', [
-            'id' => $_GET['id']
+            'id' => $request->get('note')
         ])->findOrFail();
 
         authorize($note['user_id'] === $currentUserId);
@@ -82,7 +83,7 @@ class NotesController extends Controller
         $currentUserId = 1;
 
         $note = $this->db->query('select * from notes where id = :id', [
-            'id' => $_GET['id']
+            'id' => $_GET['id'] ?? null
         ])->findOrFail();
 
         authorize($note['user_id'] === $currentUserId);
